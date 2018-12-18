@@ -1,8 +1,6 @@
 import colorgram, json
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
-from sklearn.cluster import KMeans
 import urllib
 import pyrebase
 from skimage import io
