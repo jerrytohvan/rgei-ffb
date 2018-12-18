@@ -1,5 +1,5 @@
 import colorgram, json
-import cv2 
+import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
@@ -59,19 +59,19 @@ def ripness_index(img):
     avg_color = np.average(avg_color_per_row, axis=0)
 
     up = float(avg_color[2])
-    base = float(avg_color[1]) * float(avg_color[0]) 
+    base = float(avg_color[1]) * float(avg_color[0])
     ri = up* up / base
 
     ripe = False
     status_code = 0
     if ri > 3.56 and ri <5.83:
         ripe = True
-        status_code = 1 
+        status_code = 1
     elif ri < 3.56:
         status_code =  0
     else:
         status_code =  2
-        
+
     return [ri, status_code]
 
 # def color_normalisation(color):
@@ -118,7 +118,7 @@ ffbs = db.child("ffbs").order_by_child("date_added").limit_to_last(2).get()
 print(ffbs.val())
 # ffbs = db.child("ffbs").get()
 container = {}
-for ffb in ffbs.each(): 
+for ffb in ffbs.each():
     container[ffb.key()] = [ffb.val().get('date_added'),ffb.val().get('filename') ]
 
 #IMG download
@@ -150,7 +150,7 @@ for color in colors:
         predict = is_ripe(color)
         if predict == 1:
             ripe = True
-        color_banks[color.proportion/(1-black_proportion)] = ([color.rgb.r, color.rgb.g, color.rgb.b])   
+        color_banks[color.proportion/(1-black_proportion)] = ([color.rgb.r, color.rgb.g, color.rgb.b])
 
 #if none of color indicator classified under ripe how do we measure fruit maturity (over/under?)
 color_banks["ripe"] = ripe
