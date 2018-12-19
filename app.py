@@ -159,7 +159,7 @@ def run_process():
     color_banks["ripeness_index_status"] = ri[1]
 
     #Encode
-    return json.JSONEncoder().encode(color_banks)
+    return color_banks
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -170,7 +170,7 @@ if __name__ == ' __main__':
 
 @app.route('/')
 def index():
-    d = make_summary()
+    d = run_process()
     return jsonify(d)
 
 
