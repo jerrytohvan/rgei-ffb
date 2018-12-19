@@ -77,4 +77,4 @@ urllib3==1.24.1
 virtualenv==16.1.0
 xattr==0.6.4
 yarg==0.1.9
-requests==2.6.0
+requests==2.11.1
