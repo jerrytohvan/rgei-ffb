@@ -78,3 +78,6 @@ virtualenv==16.1.0
 xattr==0.6.4
 yarg==0.1.9
 requests==2.11.1
+jsonify==0.5
+Flask==1.0.2
+gunicorn==19.9.0

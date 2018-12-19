@@ -5,6 +5,7 @@ import urllib
 import pyrebase
 from skimage import io
 from flask import jsonify
+from flask import Flask
 
 config = {
     "apiKey": "AIzaSyDR0JBAKQvqrCbvCLzxPT_fbxSplTgFSEE",
@@ -161,9 +162,16 @@ def run_process():
     return json.JSONEncoder().encode(color_banks)
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+if __name__ == ' __main__':
+    #app.debug = True
+    app.run()
 
 @app.route('/')
 def index():
     d = make_summary()
     return jsonify(d)
+
+
 
