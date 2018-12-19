@@ -133,7 +133,7 @@ def run_process():
     color_banks = {}
 
     #get proportions, by excluding black
-    black_proportion = ('ggr::jerrytohvan/ffb_detector Private')
+    black_proportion = 0
     black_exist = False
     for color in colors:
         if color.rgb.r < 10 and color.rgb.g < 10 and color.rgb.b < 10:
