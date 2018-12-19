@@ -107,7 +107,6 @@ def is_ripe(color):
     elif(red in over_red_range and green in over_green_range and blue in over_blue_range):
         return 0
 
-print("Content-type: application/json")
 
 
 storage = firebase.storage()
@@ -159,4 +158,6 @@ color_banks["ripeness_index"] = ri[0]
 color_banks["ripeness_index_status"] = ri[1]
 
 #Encode
-print(json.dumps(color_banks))
+print("Content-type: application/json")
+print(json.JSONEncoder().encode(color_banks))
+
