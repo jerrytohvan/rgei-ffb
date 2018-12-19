@@ -107,13 +107,14 @@ def is_ripe(color):
     elif(red in over_red_range and green in over_green_range and blue in over_blue_range):
         return 0
 
+print("Content-type: application/json")
+
 
 storage = firebase.storage()
 db = firebase.database()
 
 
 ffbs = db.child("ffbs").order_by_child("date_added").limit_to_last(2).get()
-print(ffbs.val())
 # ffbs = db.child("ffbs").get()
 container = {}
 for ffb in ffbs.each():
@@ -121,9 +122,7 @@ for ffb in ffbs.each():
 
 #IMG download
 key = ffbs.each()[1].key()
-print(key)
 filename = "rge-ffb-evaluator/" +container[key][1]
-print(filename)
 url = storage.child(filename).get_url(None)
 img = io.imread(url)
 img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -160,4 +159,4 @@ color_banks["ripeness_index"] = ri[0]
 color_banks["ripeness_index_status"] = ri[1]
 
 #Encode
-print(json.dumps(color_banks, indent = 4))
+print(json.dumps(color_banks))
