@@ -171,7 +171,7 @@ if __name__ == ' __main__':
 @app.route('/')
 def index():
     d = run_process()
-    return jsonify(d)
+    return json.dumps(d, indent=4)
 
 
 
