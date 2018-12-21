@@ -131,7 +131,7 @@ def run_process():
     colors = colorgram.extract('./temp-filtered.png', 10)
     color_banks = {}
     #get proportions, by excluding black
-    black_proportion = ('ggr::jerrytohvan/ffb_detector Private')
+    black_proportion = 0
     black_exist = False
     for color in colors:
         if color.rgb.r <= 15 and color.rgb.g <= 15 and color.rgb.b <= 15:
@@ -165,5 +165,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     d = make_summary()
-    return jsonify(d)
-
+    return d
+    
+# print run_process()
