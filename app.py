@@ -7,6 +7,8 @@ import os
 from skimage import io
 from flask import jsonify
 from flask import Flask
+from flask import send_file
+from flask import read_image
 
 config = {
     "apiKey": "AIzaSyDR0JBAKQvqrCbvCLzxPT_fbxSplTgFSEE",
@@ -183,4 +185,8 @@ def get_image(path):
     return response
     # return os.path.abspath("./" + path)
 
+@app.route('/get_image')
+def get_image():
+    filename = 'temp-filtered.png'
+    return send_file(filename, mimetype='image/png')
 
