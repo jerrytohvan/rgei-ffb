@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import urllib
 import pyrebase
+import os
 from skimage import io
 from flask import jsonify
 from flask import Flask
@@ -175,10 +176,6 @@ def index():
 
 @app.route("/imgs/<path:path>")
 def images(path):
-    generate_img(path)
-    fullpath = "./" + path
-    resp = flask.make_response(open(fullpath).read())
-    resp.content_type = "image/png"
-    return resp
+    return os.path.abspath("./" + path)
 
 
