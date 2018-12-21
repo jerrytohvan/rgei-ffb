@@ -130,7 +130,6 @@ def run_process():
     # Extract 6 colors from an image using K Clustering
     colors = colorgram.extract('./temp-filtered.png', 10)
     color_banks = {}
-
     #get proportions, by excluding black
     black_proportion = ('ggr::jerrytohvan/ffb_detector Private')
     black_exist = False
@@ -142,7 +141,8 @@ def run_process():
     ripe = False
     ripeness_status = 0
     for color in colors:
-        if not (color.rgb.r < 10 and color.rgb.g < 10 and color.rgb.b < 10):
+        # calibrate
+        if not (color.rgb.r <= 15 and color.rgb.g <= 15 and color.rgb.b <= 15):
             predict = is_ripe(color)
             if predict == 1:
                 ripe = True
