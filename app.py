@@ -174,8 +174,7 @@ def index():
     d = run_process()
     return json.dumps(d, indent=4)
 
-@app.route('/get_image')
-def get_image():
-    filename = 'temp-filtered.png'
-    return send_file(filename, mimetype='image/png')
+@app.route('/<path:path>')
+def get_image(path):
+    return send_file(path, mimetype='image/png')
 
