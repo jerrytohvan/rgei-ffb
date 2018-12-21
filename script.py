@@ -142,7 +142,7 @@ def run_process():
     ripeness_status = 0
     for color in colors:
         # calibrate
-        if not (color.rgb.r <= 15 and color.rgb.g <= 15 and color.rgb.b <= 15):
+        if  (color.rgb.r > 15 and color.rgb.g > 15 and color.rgb.b > 15):
             predict = is_ripe(color)
             if predict == 1:
                 ripe = True
