@@ -175,7 +175,12 @@ def index():
     return json.dumps(d, indent=4)
 
 @app.route("/imgs/<path:path>")
-def images(path):
-    return os.path.abspath("./" + path)
+def get_image(path):    
+    image_binary = read_image(path)
+    response = make_response(image_binary)
+    response.headers.set('Content-Type', 'image/png')
+    response.headers.set('Content-Disposition', 'attachment', filename='%s.png' % pid)
+    return response
+    # return os.path.abspath("./" + path)
 
 
