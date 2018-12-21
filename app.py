@@ -136,14 +136,14 @@ def run_process():
     black_proportion = 0
     black_exist = False
     for color in colors:
-        if color.rgb.r < 10 and color.rgb.g < 10 and color.rgb.b < 10:
+        if color.rgb.r < 15 and color.rgb.g < 15 and color.rgb.b < 15:
             black_proportion = color.proportion
             black_exist = True
 
     ripe = False
     ripeness_status = 0
     for color in colors:
-        if not (color.rgb.r < 10 and color.rgb.g < 10 and color.rgb.b < 10):
+        if not (color.rgb.r < 15 and color.rgb.g < 15 and color.rgb.b < 15):
             predict = is_ripe(color)
             if predict == 1:
                 ripe = True
