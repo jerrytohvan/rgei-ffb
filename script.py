@@ -165,5 +165,5 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     d = make_summary()
-    return d
+    return jsonify(d)
 
