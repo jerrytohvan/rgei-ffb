@@ -6,7 +6,7 @@ import pyrebase
 import os
 from skimage import io
 from flask import jsonify
-from flask import Flask
+from flask import Flask, send_file
 
 config = {
     "apiKey": "AIzaSyDR0JBAKQvqrCbvCLzxPT_fbxSplTgFSEE",
