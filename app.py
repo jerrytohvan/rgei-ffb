@@ -173,5 +173,12 @@ def index():
     d = run_process()
     return json.dumps(d, indent=4)
 
+@app.route("/imgs/<path:path>")
+def images(path):
+    generate_img(path)
+    fullpath = "./" + path
+    resp = flask.make_response(open(fullpath).read())
+    resp.content_type = "image/png"
+    return resp
 
 
