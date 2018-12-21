@@ -134,7 +134,7 @@ def run_process():
     black_proportion = ('ggr::jerrytohvan/ffb_detector Private')
     black_exist = False
     for color in colors:
-        if color.rgb.r < 10 and color.rgb.g < 10 and color.rgb.b < 10:
+        if color.rgb.r <= 15 and color.rgb.g <= 15 and color.rgb.b <= 15:
             black_proportion = color.proportion
             black_exist = True
 
@@ -146,7 +146,7 @@ def run_process():
             predict = is_ripe(color)
             if predict == 1:
                 ripe = True
-            color_banks[color.proportion/(1-black_proportion)] = ([color.rgb.r, color.rgb.g, color.rgb.b])
+            color_banks[color.proportion/(1-black_proportion)] = [color.rgb.r, color.rgb.g, color.rgb.b]
 
     #if none of color indicator classified under ripe how do we measure fruit maturity (over/under?)
     color_banks["ripe"] = ripe
