@@ -8,7 +8,6 @@ from skimage import io
 from flask import jsonify
 from flask import Flask
 from flask import send_file
-from flask import read_image
 
 config = {
     "apiKey": "AIzaSyDR0JBAKQvqrCbvCLzxPT_fbxSplTgFSEE",
