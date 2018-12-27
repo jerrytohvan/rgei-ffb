@@ -116,7 +116,6 @@ def get_pixels_of_reference_object(img):
 
     #get length of reference object
     ACTUAL_CM_SIZE_LENGTH = 10.0
-    ACTUAL_CM_SIZE_WIDTH = 3.0
     object_found = False
 
      # chroma key color boundaries (R,B and G)
@@ -178,27 +177,20 @@ def get_pixels_of_reference_object(img):
             #left
             cv2.circle(output, (minx,miny+((maxy-miny)/2)), 8, (255, 255, 0), -1)
 
-            # cm per unit
-            if maxx>maxy:
-                #x axis is the length
-                LENGTH_PER_PIXEL = ACTUAL_CM_SIZE_LENGTH/(maxx-minx)
-                WIDTH_PER_PIXEL = ACTUAL_CM_SIZE_WIDTH/(maxy-miny)
-            else:
-                #y axis is the length
-                WIDTH_PER_PIXEL = ACTUAL_CM_SIZE_WIDTH/(maxx-minx)
-                LENGTH_PER_PIXEL= ACTUAL_CM_SIZE_LENGTH/(maxy-miny)
-
+            # cm per coordinate unit 
+            LENGTH_PER_PIXEL = ACTUAL_CM_SIZE_LENGTH/(maxx-minx)
+        
     cv2.imwrite('chroma_object.png', output)
 
     #identify pixels per metric
-    return [object_found, LENGTH_PER_PIXEL, WIDTH_PER_PIXEL]
+    return [object_found, LENGTH_PER_PIXEL]
 
 def retrieve_contour_properties(img):
     OBJECT_LENGTH = 0
     OBJECT_WIDTH = 0
 
     reference = get_pixels_of_reference_object(img)
-
+    print reference
     # red color boundaries (R,B and G)
     lower = [1, 0, 20]
     upper = [60, 40, 200]
@@ -266,17 +258,21 @@ def retrieve_contour_properties(img):
         if(reference[0] == True):
             #define unit ratios
             reference_len = reference[1]
-            reference_width = reference[2]
 
             #check len & width size of object
             if maxx>maxy:
                 #x axis is length of object
                 OBJECT_LENGTH = (maxx-minx)*reference_len
-                OBJECT_WIDTH = (maxy-miny)*reference_width
+                OBJECT_WIDTH = (maxy-miny)*reference_len
+
+                print str(maxy) + " " + str(miny) 
+
             else:
                 #y axis is length of object
-                OBJECT_WIDTH = (maxx-minx)*reference_width
+                OBJECT_WIDTH = (maxx-minx)*reference_len
                 OBJECT_LENGTH = (maxy-miny)*reference_len
+
+
 
     # show the images
     cv2.imwrite('contour.png', output)
@@ -348,19 +344,20 @@ def run_process():
 
     return color_banks
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-if __name__ == ' __main__':
-    #app.debug = True
-    app.run()
+# if __name__ == ' __main__':
+#     #app.debug = True
+#     app.run()
 
-@app.route('/')
-def index():
-    d = run_process()
-    return json.dumps(d, indent=4)
+# @app.route('/')
+# def index():
+#     d = run_process()
+#     return json.dumps(d, indent=4)
 
-@app.route('/<path:path>')
-def get_image(path):
-    return send_file(path, mimetype='image/png')
+# @app.route('/<path:path>')
+# def get_image(path):
+#     return send_file(path, mimetype='image/png')
+print run_process()
 
