@@ -4,6 +4,9 @@ import numpy as np
 import urllib
 import pyrebase
 import os
+import imutils
+import itertools
+import matplotlib.pyplot as plt
 from skimage import io
 from flask import jsonify
 from flask import Flask, send_file
@@ -16,8 +19,6 @@ config = {
     "storageBucket": "computervision-7e5fb.appspot.com",
     "messagingSenderId": "62106225870"
   }
-
-
 
 def background_removal(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -110,6 +111,177 @@ def is_ripe(color):
     elif(red in over_red_range and green in over_green_range and blue in over_blue_range):
         return 0
 
+def get_pixels_of_reference_object(img):
+    #https://www.pyimagesearch.com/2016/03/28/measuring-size-of-objects-in-an-image-with-opencv/
+
+    #get length of reference object
+    ACTUAL_CM_SIZE_LENGTH = 10.0
+    ACTUAL_CM_SIZE_WIDTH = 3.0
+    object_found = False
+
+     # chroma key color boundaries (R,B and G)
+    lower = [0, 200, 0]
+    upper = [20, 255, 20]
+
+    # # # create NumPy arrays from the boundaries
+    lower = np.array(lower, dtype="uint8")
+    upper = np.array(upper, dtype="uint8")
+
+    # # find the colors within the specified boundaries and apply
+    # # the mask
+    mask = cv2.inRange(img, lower, upper)
+    output = cv2.bitwise_and(img, img, mask=mask)
+    
+    ret,thresh = cv2.threshold(mask, 40, 255, 0)
+    cv2.threshold(cv2.cvtColor(output, cv2.COLOR_BGR2GRAY),127, 255, cv2.THRESH_BINARY)
+    im2,contours,hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if len(contours) != 0:
+        # cv2.drawContours(output, contours, -1, (255,0,0), 3)
+        if len(contours) == 1:
+            object_found = True
+
+        # measure length and pixel
+            minx = None
+            maxx = None
+            miny = None
+            maxy = None
+
+            x,y,w,h = cv2.boundingRect(contours[0])
+            if minx is None:
+                minx = x
+            elif x < minx:
+                minx = x
+
+            if maxx is None:
+                maxx = x+w 
+            elif x+w > maxx:
+                maxx = x+w
+
+            if miny is None:
+                miny = y
+            elif y < miny:
+                miny = y
+
+            if maxy is None:
+                maxy = y+h
+            elif y+h > maxy:
+                maxy = y+h
+
+            cv2.rectangle(output,(x,y),(x+w,y+h),(255,0,0),2)
+
+            #top
+            cv2.circle(output, (minx+(maxx-minx)/2,miny), 8, (0, 0, 255), -1)
+            #bottom
+            cv2.circle(output, (minx+(maxx-minx)/2,maxy), 8, (0, 255, 0), -1)
+            #right
+            cv2.circle(output, (maxx,miny+((maxy-miny)/2)), 8, (0, 255, 255), -1)
+            #left
+            cv2.circle(output, (minx,miny+((maxy-miny)/2)), 8, (255, 255, 0), -1)
+
+            # cm per unit
+            if maxx>maxy:
+                #x axis is the length
+                LENGTH_PER_PIXEL = ACTUAL_CM_SIZE_LENGTH/(maxx-minx)
+                WIDTH_PER_PIXEL = ACTUAL_CM_SIZE_WIDTH/(maxy-miny)
+            else:
+                #y axis is the length
+                WIDTH_PER_PIXEL = ACTUAL_CM_SIZE_WIDTH/(maxx-minx)
+                LENGTH_PER_PIXEL= ACTUAL_CM_SIZE_LENGTH/(maxy-miny)
+
+    cv2.imwrite('chroma_object.png', output)
+
+    #identify pixels per metric
+    return [object_found, LENGTH_PER_PIXEL, WIDTH_PER_PIXEL]
+
+def retrieve_contour_properties(img):
+    OBJECT_LENGTH = 0
+    OBJECT_WIDTH = 0
+
+    reference = get_pixels_of_reference_object(img)
+
+    # red color boundaries (R,B and G)
+    lower = [1, 0, 20]
+    upper = [60, 40, 200]
+
+    # # # create NumPy arrays from the boundaries
+    lower = np.array(lower, dtype="uint8")
+    upper = np.array(upper, dtype="uint8")
+
+    # # find the colors within the specified boundaries and apply
+    # # the mask
+    mask = cv2.inRange(img, lower, upper)
+    output = cv2.bitwise_and(img, img, mask=mask)
+
+
+    ret,thresh = cv2.threshold(mask, 40, 255, 0)
+    cv2.threshold(cv2.cvtColor(output, cv2.COLOR_BGR2GRAY),127, 255, cv2.THRESH_BINARY)
+    im2,contours,hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    minx = None
+    maxx = None
+    miny = None
+    maxy = None
+
+    if len(contours) != 0:
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area > 300: #filtering contours
+                x,y,w,h = cv2.boundingRect(cnt)
+                if minx is None:
+                    minx = x
+                elif x < minx:
+                    minx = x
+
+                if maxx is None:
+                    maxx = x+w 
+                elif x+w > maxx:
+                    maxx = x+w
+
+                if miny is None:
+                    miny = y
+                elif y < miny:
+                    miny = y
+
+                if maxy is None:
+                    maxy = y+h
+                elif y+h > maxy:
+                    maxy = y+h
+
+                cv2.rectangle(output,(x,y),(x+w,y+h),(255,0,0),2)
+
+        # include bigger contours instead
+        outer_bound= cv2.rectangle(output,(minx,miny),(maxx,maxy),(0,255,0),2)
+
+        #top
+        cv2.circle(output, (minx+(maxx-minx)/2,miny), 8, (0, 0, 255), -1)
+        #bottom
+        cv2.circle(output, (minx+(maxx-minx)/2,maxy), 8, (0, 255, 0), -1)
+        #right
+        cv2.circle(output, (maxx,miny+((maxy-miny)/2)), 8, (0, 255, 255), -1)
+        #left
+        cv2.circle(output, (minx,miny+((maxy-miny)/2)), 8, (255, 255, 0), -1)
+
+        
+        #compare with reference object
+        if(reference[0] == True):
+            #define unit ratios
+            reference_len = reference[1]
+            reference_width = reference[2]
+
+            #check len & width size of object
+            if maxx>maxy:
+                #x axis is length of object
+                OBJECT_LENGTH = (maxx-minx)*reference_len
+                OBJECT_WIDTH = (maxy-miny)*reference_width
+            else:
+                #y axis is length of object
+                OBJECT_WIDTH = (maxx-minx)*reference_len
+                OBJECT_LENGTH = (maxy-miny)*reference_width
+
+    # show the images
+    cv2.imwrite('contour.png', output)
+
+    return [reference[0] , OBJECT_LENGTH, OBJECT_WIDTH]
 
 def run_process():
     firebase = pyrebase.initialize_app(config)
@@ -159,7 +331,21 @@ def run_process():
     color_banks["ripeness_index"] = ri[0]
     color_banks["ripeness_index_status"] = ri[1]
 
-    #Encode
+
+    #retrieve image properties
+    contour = retrieve_contour_properties(img)
+
+    color_banks["reference_object_exists"] = contour[0]
+    color_banks["object_length"] = contour[1]
+    color_banks["object_width"] = contour[2]
+
+
+    #identify validity of size
+    if contour[1] >= 35 and contour[1] <= 45:
+        color_banks["size_valid"] = 1
+    else:
+        color_banks["size_valid"] = 0
+
     return color_banks
 
 app = Flask(__name__)
@@ -177,4 +363,6 @@ def index():
 @app.route('/<path:path>')
 def get_image(path):
     return send_file(path, mimetype='image/png')
+
+
 
