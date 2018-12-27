@@ -6,7 +6,7 @@ import pyrebase
 import os
 import imutils
 import itertools
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from skimage import io
 from flask import jsonify
 from flask import Flask, send_file
@@ -363,6 +363,5 @@ def index():
 @app.route('/<path:path>')
 def get_image(path):
     return send_file(path, mimetype='image/png')
-
 
 
