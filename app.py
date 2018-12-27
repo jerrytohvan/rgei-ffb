@@ -225,7 +225,7 @@ def retrieve_contour_properties(img):
     if len(contours) != 0:
         for cnt in contours:
             area = cv2.contourArea(cnt)
-            if area > 300: #filtering contours
+            if area > 400: #filtering contours
                 x,y,w,h = cv2.boundingRect(cnt)
                 if minx is None:
                     minx = x
@@ -275,8 +275,8 @@ def retrieve_contour_properties(img):
                 OBJECT_WIDTH = (maxy-miny)*reference_width
             else:
                 #y axis is length of object
-                OBJECT_WIDTH = (maxx-minx)*reference_len
-                OBJECT_LENGTH = (maxy-miny)*reference_width
+                OBJECT_WIDTH = (maxx-minx)*reference_width
+                OBJECT_LENGTH = (maxy-miny)*reference_len
 
     # show the images
     cv2.imwrite('contour.png', output)
@@ -363,5 +363,4 @@ def index():
 @app.route('/<path:path>')
 def get_image(path):
     return send_file(path, mimetype='image/png')
-
 
