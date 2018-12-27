@@ -190,7 +190,7 @@ def retrieve_contour_properties(img):
     OBJECT_WIDTH = 0
 
     reference = get_pixels_of_reference_object(img)
-    print reference
+
     # red color boundaries (R,B and G)
     lower = [1, 0, 20]
     upper = [60, 40, 200]
@@ -264,8 +264,6 @@ def retrieve_contour_properties(img):
                 #x axis is length of object
                 OBJECT_LENGTH = (maxx-minx)*reference_len
                 OBJECT_WIDTH = (maxy-miny)*reference_len
-
-                print str(maxy) + " " + str(miny) 
 
             else:
                 #y axis is length of object
@@ -344,20 +342,18 @@ def run_process():
 
     return color_banks
 
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# if __name__ == ' __main__':
-#     #app.debug = True
-#     app.run()
+if __name__ == ' __main__':
+    #app.debug = True
+    app.run()
 
-# @app.route('/')
-# def index():
-#     d = run_process()
-#     return json.dumps(d, indent=4)
+@app.route('/')
+def index():
+    d = run_process()
+    return json.dumps(d, indent=4)
 
-# @app.route('/<path:path>')
-# def get_image(path):
-#     return send_file(path, mimetype='image/png')
-print run_process()
-
+@app.route('/<path:path>')
+def get_image(path):
+    return send_file(path, mimetype='image/png')
