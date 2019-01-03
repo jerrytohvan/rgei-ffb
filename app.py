@@ -286,7 +286,7 @@ def run_process():
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
     db = firebase.database()
-    ffbs = db.child("ffbs").order_by_child("date_added").limit_to_last(2).get()
+    ffbs = db.child("ffbs").order_by_child("date_added").limit_to_last(1).get()
     # ffbs = db.child("ffbs").get()
     container = {}
     for ffb in ffbs.each():
@@ -319,6 +319,7 @@ def run_process():
             predict = is_ripe(color)
             if predict == 1:
                 ripe = True
+            ripeness_status = predict
             color_banks[color.proportion/(1-black_proportion)] = ([color.rgb.r, color.rgb.g, color.rgb.b])
 
     #if none of color indicator classified under ripe how do we measure fruit maturity (over/under?)
@@ -350,9 +351,9 @@ def run_process():
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-if __name__ == ' __main__':
+if __name__ == "__main__":
+    app.run()    
     #app.debug = True
-    app.run()
 
 @app.route('/')
 def index():
