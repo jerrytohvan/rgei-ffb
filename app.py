@@ -40,7 +40,7 @@ def background_removal(img):
     cv2.imwrite('B-RGB.jpg',dst[:, :, 0])
     # RGB - Green
     cv2.imwrite('G-RGB.jpg',dst[:, :, 1])
-    # RGB Red
+    # RGB Re
     cv2.imwrite('R-RGB.jpg',dst[:, :, 2])
 
     #[saved_name, img object]
@@ -178,7 +178,12 @@ def get_pixels_of_reference_object(img):
             cv2.circle(output, (minx,miny+((maxy-miny)/2)), 8, (255, 255, 0), -1)
 
             # cm per coordinate unit 
-            LENGTH_PER_PIXEL = ACTUAL_CM_SIZE_LENGTH/(maxx-minx)
+            if (maxx-minx) > (maxy - miny):
+                LENGTH_PER_PIXEL = ACTUAL_CM_SIZE_LENGTH/(maxx-minx)
+            else:
+                LENGTH_PER_PIXEL = ACTUAL_CM_SIZE_LENGTH/(maxy-miny)
+
+
         
     cv2.imwrite('chroma_object.png', output)
 
