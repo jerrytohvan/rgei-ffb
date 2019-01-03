@@ -292,8 +292,12 @@ def run_process():
     for ffb in ffbs.each():
         container[ffb.key()] = [ffb.val().get('date_added'),ffb.val().get('filename') ]
 
+    print container
+
+    print ffbs
+
     #IMG download
-    key = ffbs.each()[1].key()
+    key = ffbs[0][1].key()
     filename = "rge-ffb-evaluator/" +container[key][1]
     url = storage.child(filename).get_url(None)
     img = io.imread(url)
