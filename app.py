@@ -117,7 +117,7 @@ def get_pixels_of_reference_object(img):
     #get length of reference object
     ACTUAL_CM_SIZE_LENGTH = 10.0
     object_found = False
-
+    LENGTH_PER_PIXEL = 0
      # chroma key color boundaries (R,B and G)
     lower = [0, 200, 0]
     upper = [20, 255, 20]
@@ -340,7 +340,7 @@ def run_process():
 
 
     #identify validity of size
-    if contour[1] >= 35 and contour[1] <= 45:
+    if contour[1] >= 35 and contour[1] <= 50:
         color_banks["size_valid"] = 1
     else:
         color_banks["size_valid"] = 0
