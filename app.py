@@ -110,6 +110,7 @@ def is_ripe(color):
         return 2
     elif(red in over_red_range and green in over_green_range and blue in over_blue_range):
         return 0
+    return 0
 
 def get_pixels_of_reference_object(img):
     #https://www.pyimagesearch.com/2016/03/28/measuring-size-of-objects-in-an-image-with-opencv/
