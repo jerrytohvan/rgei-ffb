@@ -288,17 +288,19 @@ def run_process():
     db = firebase.database()
     ffbs = db.child("ffbs").order_by_child("date_added").limit_to_last(1).get()
     # ffbs = db.child("ffbs").get()
-    container = {}
+    # container = {}
+    name = ""
     for ffb in ffbs.each():
-        container[ffb.key()] = [ffb.val().get('date_added'),ffb.val().get('filename') ]
+        name = ffb.val().get('filename')
 
-    print container
+    # print container
 
-    print ffbs
+    # print ffbs
 
-    #IMG download
-    key = ffbs[0][1].key()
-    filename = "rge-ffb-evaluator/" +container[key][1]
+    # IMG download
+    # key = ffbs[0].key()
+    # filename = "rge-ffb-evaluator/" +container[key][1]
+    filename = "rge-ffb-evaluator/" + name
     url = storage.child(filename).get_url(None)
     img = io.imread(url)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
